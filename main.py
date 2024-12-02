@@ -2,9 +2,11 @@ import discord
 import discord.app_commands as commands
 import requests
 import os
-from internal.logger import logger
 from dotenv import load_dotenv
 import json
+from internal.logger import logger
+from internal.config import Config
+from internal.Discord import Discord
 
 # トークンなどの読み込み
 load_dotenv('.env')
@@ -18,6 +20,8 @@ tree: commands.CommandTree = commands.CommandTree(client=client)
 
 # logger作成
 Logger = logger()
+config = Config('discord.config.json')
+dis = Discord(config)
 
 @client.event
 async def on_ready(): # botが起動したとき
@@ -37,6 +41,10 @@ async def on_guild_join(guild: discord.Guild):
             permissions=permissions,
             color=discord.Color.dark_purple()
         )
+        bot_role_id = bot_role.id
+        guild_id = guild.id
+
+
 
 
 

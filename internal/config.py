@@ -10,3 +10,4 @@ class Config(object):
 
     def save_config(self, data: json):
         return open(file=self.config_path, mode="w").write(json.dumps(data, indent=4))
+
