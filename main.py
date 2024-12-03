@@ -21,7 +21,7 @@ tree: commands.CommandTree = commands.CommandTree(client=client)
 # logger作成
 Logger = logger()
 config = Config('discord.config.json')
-dis = Discord(config)
+dis = Discord(config=config, client=client)
 
 @client.event
 async def on_ready(): # botが起動したとき
@@ -33,31 +33,7 @@ async def on_guild_join(guild: discord.Guild):
     owner_id: int = guild.owner_id
     owner: discord.User = client.get_user(owner_id)
 
-    # サーバーに管理用ロール作成
-    try:
-        permissions: discord.Permissions = discord.Permissions.administrator()
-        bot_role = await guild.create_role(
-            name='Bot',
-            permissions=permissions,
-            color=discord.Color.dark_purple()
-        )
-        bot_role_id = bot_role.id
-        guild_id = guild.id
-
-
-
-
-
-    except discord.Forbidden as e:
-        embed = discord.Embed( # エラーメッセージを作成
-            title="Error",
-            description="Bot用ロールを作成時に失敗しました。\nサーバーへの参加時には管理者権限が必要です。\n管理者権限をつけて再試行してください。\nなお、自動的にサーバーは脱退されます",
-            color=discord.Color.red()
-        )
-
-        await guild.leave() # サーバーを脱退
-        await owner.dm_channel.send(embed=embed) # サーバーのownerに送信
-        return
+    await dis.add_guild(guild)
 
 
 
