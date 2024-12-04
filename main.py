@@ -59,6 +59,9 @@ async def on_guild_remove(guild: discord.Guild):
 @client.event
 async def on_member_join(member: discord.Member): # サーバーに誰か入ってきたなら
     if member.bot: # 参加したのがbotなら
+        dis_config = config.load_config()
+
+        await member.roles
         return
 
 
