@@ -5,9 +5,9 @@ class Config(object):
         self.config_path = config_path
         return
 
-    def load_config(self):
-        return json.loads(open(file=self.config_path, mode="w").read())
+    def load_config(self) -> json:
+        return json.loads(open(file=self.config_path, mode="r").read())
 
-    def save_config(self, data: json):
+    def save_config(self, data: json) -> int:
         return open(file=self.config_path, mode="w").write(json.dumps(data, indent=4))
 

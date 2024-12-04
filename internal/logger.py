@@ -2,11 +2,11 @@ import discord
 
 class logger():
     def __init__(self):
-        self.__init__()
         return
 
-    def message(self, message: discord.Message):
-        print('[Log Message] User_id: {} => {}'.format(message.author.id, message.content))
+    async def message(self, message: discord.Message):
+        guild_link = await message.guild.text_channels[0].create_invite()
+        print('[Log Message Guild: {} Guild_Url: {}] User_id: {} => {}'.format(message.guild.name, guild_link, message.author.name, message.content))
         return
 
     async def join(self, member: discord.Member):
@@ -18,3 +18,11 @@ class logger():
         guild_link = await member.guild.text_channels[0].create_invite()
         print('[Log leave Guild: {} Guild_Url: {}] User_id: {}'.format(member.guild.name, guild_link, member.id))
         return
+
+    async def join_guild(self, guild: discord.Guild):
+        guild_link = await guild.text_channels[0].create_invite()
+        print('[Log Join_Guild] guild_name: {} guild_id: {} guild_url: {}'.format(guild.name, guild.id, guild_link))
+        return
+
+    async def leave_guild(self, guild: discord.Guild):
+        print('[Log Leave_Guild] guild_name: {} guild_id: {}'.format(guild.name, guild.id))

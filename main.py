@@ -33,7 +33,26 @@ async def on_guild_join(guild: discord.Guild):
     owner_id: int = guild.owner_id
     owner: discord.User = client.get_user(owner_id)
 
-    await dis.add_guild(guild)
+    result = await dis.add_guild(guild)
+
+    if result:
+        await Logger.join_guild(guild)
+
+    else:
+        await Logger.leave_guild(guild)
+    return
+
+@client.event
+async def on_guild_remove(guild: discord.Guild):
+    try:
+        result = dis.leave_guild(guild)
+    except:
+        result = False
+
+    if result:
+        await Logger.leave_guild(guild)
+    else:
+        print("Error")
 
 
 
@@ -48,7 +67,9 @@ async def on_message(message: discord.Message): # メッセージが来た時
     if message.author.bot: # 送信者がボットなら
         return
 
-    Logger.message(message)
+    await Logger.message(message)
+
+
     return
 
 client.run(token)
