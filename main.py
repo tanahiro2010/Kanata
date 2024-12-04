@@ -7,6 +7,7 @@ import json
 from internal.logger import logger
 from internal.config import Config
 from internal.Discord import Discord
+from internal.Kanata.auth import auth
 
 # トークンなどの読み込み
 load_dotenv('.env')
