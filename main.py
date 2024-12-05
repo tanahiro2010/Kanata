@@ -7,7 +7,7 @@ import json
 from internal.logger import logger
 from internal.config import Config
 from internal.Discord import Discord
-from internal.Kanata.auth import auth
+from internal.Kanata.auth import Auth
 
 # トークンなどの読み込み
 load_dotenv('.env')
@@ -19,10 +19,11 @@ intents: discord.Intents = discord.Intents.all()
 client: discord.Client = discord.Client(intents=intents)
 tree: commands.CommandTree = commands.CommandTree(client=client)
 
-# logger作成
+# その他作成
 Logger = logger()
 config = Config('discord.config.json')
 dis = Discord(config=config, client=client)
+auth = Auth(config=config)
 
 @client.event
 async def on_ready(): # botが起動したとき

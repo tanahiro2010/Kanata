@@ -173,3 +173,4 @@ class Discord:
         config['guilds'].pop(str(guild_id))
 
         return self.Config.save_config(data=config)
+
