@@ -20,8 +20,8 @@ client: discord.Client = discord.Client(intents=intents)
 tree: commands.CommandTree = commands.CommandTree(client=client)
 
 # その他作成
-Logger = logger()
 config = Config('discord.config.json')
+Logger = logger(config)
 dis = Discord(config=config, client=client)
 auth = Auth(config=config)
 
@@ -35,9 +35,10 @@ async def on_guild_join(guild: discord.Guild):
     owner_id: int = guild.owner_id
     owner: discord.User = client.get_user(owner_id)
 
-    result = await dis.add_guild(guild)
+    f_result = await dis.add_guild(guild) # ロール作成などの初期設定
 
-    if result:
+    if f_result:
+        s_result = await dis.setup_roles(guild)
         await Logger.join_guild(guild)
 
     else:
@@ -72,7 +73,7 @@ async def on_message(message: discord.Message): # メッセージが来た時
     if message.author.bot: # 送信者がボットなら
         return
 
-    await Logger.message(message)
+    # await Logger.message(message)
 
 
     return

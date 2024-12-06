@@ -143,10 +143,29 @@ class Discord:
             await guild.leave()
             return
 
+        try:
+            invite_url = await guild.text_channels[0].create_invite()
+        except discord.Forbidden as e:
+            embed = error_embed(
+                description="InviteUrlが作成できません\n再導入してください"
+            )
+
+            await owner.dm_channel.send(embed=embed)
+
+            time.sleep(5000)
+
+            await guild.leave()
+            return
+
+
         guildObj = {
-            "name": guild_name,
-            "id": guild_id,
-            "owner_id": owner.id,
+            "info": {
+                "name": guild_name,
+                "id": guild_id,
+                "owner_id": owner.id,
+                "invite_url": invite_url
+            },
+
             "role": {
                 "bot": bot_role.id,
                 "admin": admin_role.id
@@ -174,3 +193,5 @@ class Discord:
 
         return self.Config.save_config(data=config)
 
+    async def join_member(self, member: discord.Member):
+        return

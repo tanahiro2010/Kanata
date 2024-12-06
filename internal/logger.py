@@ -1,7 +1,9 @@
 import discord
+from internal.config import Config
 
-class logger():
-    def __init__(self):
+class logger:
+    def __init__(self, config: Config):
+        self.config = Config
         return
 
     async def message(self, message: discord.Message):
