@@ -194,5 +194,25 @@ class Discord:
 
         return self.Config.save_config(data=config)
 
+    async def setup_roles(self, guild: discord.Guild):
+        conf = self.Config.load_config()
+        dev_role_id: int = int(conf['role']['admin'])
+        dev_role: discord.Role = guild.get_role(dev_role_id)
+        bot_role_id: int = int(conf['role']['bot'])
+        bot_role: discord.Role = guild.get_role(bot_role_id)
+        for member in guild.members:
+            try:
+                if member.bot:
+                    await member.add_roles(bot_role) # bot専用管理ロール追加
+                else:
+                    member_id = member.id
+                    if member_id in conf['members']:
+                        await member.add_roles(dev_role)
+                    pass
+                pass
+            except discord.Forbidden as e:
+                return False
+        return True
+
     async def join_member(self, member: discord.Member):
         return
