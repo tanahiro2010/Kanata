@@ -215,4 +215,21 @@ class Discord:
         return True
 
     async def join_member(self, member: discord.Member):
+        conf = self.Config.load_config()
+        dev_role_id: int = int(conf['role']['admin'])
+        bot_role_id: int = int(conf['role']['bot'])
+
+        if member.bot: # ロールなどの付与処理
+            bot_role = member.guild.get_role(bot_role_id)
+            await member.add_roles(bot_role)
+        else:
+            member_id = member.id
+            if member_id in conf['members']:
+                dev_role = member.guild.get_role(dev_role_id)
+                await member.add_roles(dev_role)
+            pass
+
+
+        # Logに送信
+        members_log_channel_id: int = int(conf['guilds'][str(member.guild.id)]['log']['channels']['members'])
         return
