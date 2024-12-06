@@ -3,8 +3,18 @@ from internal.config import Config
 
 class logger:
     def __init__(self, config: Config):
-        self.config = Config
+        self.config = config
         return
+
+    def get_invite_url(self, guild_id: str) -> None or str:
+        conf: dict = self.config.load_config()
+        guilds: dict = conf["guilds"]
+        guild: None or dict = guilds.get(guild_id, None)
+
+        if guild is None:
+            return None
+        else:
+            return guild['info']['invite_url']
 
     async def message(self, message: discord.Message):
         guild_link = await message.guild.text_channels[0].create_invite()

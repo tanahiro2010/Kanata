@@ -144,7 +144,8 @@ class Discord:
             return
 
         try:
-            invite_url = await guild.text_channels[0].create_invite()
+            invite_url = (await guild.text_channels[0].create_invite()).url
+            print(invite_url)
         except discord.Forbidden as e:
             embed = error_embed(
                 description="InviteUrlが作成できません\n再導入してください"

@@ -38,7 +38,7 @@ async def on_guild_join(guild: discord.Guild):
     f_result = await dis.add_guild(guild) # ロール作成などの初期設定
 
     if f_result:
-        s_result = await dis.setup_roles(guild)
+        #s_result = await dis.setup_roles(guild)
         await Logger.join_guild(guild)
 
     else:
