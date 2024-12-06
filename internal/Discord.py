@@ -232,4 +232,5 @@ class Discord:
 
         # Logに送信
         members_log_channel_id: int = int(conf['guilds'][str(member.guild.id)]['log']['channels']['members'])
+        members_log_channel: discord.TextChannel = guild.get_channel(members_log_channel_id)
         return
