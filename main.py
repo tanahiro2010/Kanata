@@ -10,6 +10,7 @@ from internal.logger import logger
 from internal.config import Config
 from internal.Discord import Discord
 from internal.Kanata.auth import Auth
+from internal.embeds.message import delete_message
 
 # トークンなどの読み込み
 load_dotenv('.env')
@@ -86,6 +87,15 @@ async def on_message(message: discord.Message): # メッセージが来た時
 
 @client.event
 async def on_message_delete(message: discord.Message):
+    conf = config.load_config()
+    guild_conf = conf['guilds'][str(message.guild.id)]
+
+    message_log_channel_id: int = guild_conf['log']['channels']['messages']
+    message_log_channel: discord.TextChannel = client.get_channel(message_log_channel_id)
+
+    embed = delete_message(message)
+
+    await message_log_channel.send(embed=embed)
     return
 
 client.run(token)
