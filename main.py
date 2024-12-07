@@ -1,3 +1,5 @@
+from email import message
+
 import discord
 import discord.app_commands as commands
 import requests
@@ -38,15 +40,21 @@ async def on_guild_join(guild: discord.Guild):
     f_result = await dis.add_guild(guild) # ロール作成などの初期設定
 
     if f_result:
-        #s_result = await dis.setup_roles(guild)
-        await Logger.join_guild(guild)
+        s_result = await dis.setup_roles(guild)
+        if s_result:
+            await Logger.join_guild(guild)
+            return
+        else:
+            await guild.leave()
+            pass
+        pass
 
-    else:
-        await Logger.leave_guild(guild)
+    await Logger.leave_guild(guild)
+
     return
 
 @client.event
-async def on_guild_remove(guild: discord.Guild):
+async def on_guild_remove(guild: discord.Guild): # ギルドから消されたら
     try:
         result = dis.leave_guild(guild)
     except:
@@ -61,11 +69,11 @@ async def on_guild_remove(guild: discord.Guild):
 
 @client.event
 async def on_member_join(member: discord.Member): # サーバーに誰か入ってきたなら
-    if member.bot: # 参加したのがbotなら
-        dis_config = config.load_config()
+    return await dis.join_member(member=member)
 
-        await member.roles
-        return
+@client.event
+async def on_member_remove(member: discord.Member):
+    return await dis.leave_member(member)
 
 
 @client.event
@@ -73,9 +81,11 @@ async def on_message(message: discord.Message): # メッセージが来た時
     if message.author.bot: # 送信者がボットなら
         return
 
-    # await Logger.message(message)
+    await Logger.message(message)
+    return
 
-
+@client.event
+async def on_message_delete(message: discord.Message):
     return
 
 client.run(token)

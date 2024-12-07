@@ -1,7 +1,8 @@
 import time
-
 from internal.config import Config as cf
 from internal.embeds.error import error_embed
+from internal.embeds.member import join_member
+from internal.embeds.member import leave_member
 import discord
 
 class Discord:
@@ -48,7 +49,7 @@ class Discord:
         try:
             admin_role = await guild.create_role(
                 name="管理用-KanataMember",
-                color=discord.Color.light_grey(),
+                color=discord.Color.brand_green(),
             )
 
         except discord.Forbidden as e:
@@ -178,7 +179,9 @@ class Discord:
                     "messages": message_channel.id,
                     "other": other_role.id
                 }
-            }
+            },
+
+            "protect_channels": []
         }
 
         config = self.Config.load_config()
@@ -196,9 +199,10 @@ class Discord:
 
     async def setup_roles(self, guild: discord.Guild):
         conf = self.Config.load_config()
-        dev_role_id: int = int(conf['role']['admin'])
+        guild_conf = conf['guilds'][str(guild.id)]
+        dev_role_id: int = int(guild_conf['role']['admin'])
         dev_role: discord.Role = guild.get_role(dev_role_id)
-        bot_role_id: int = int(conf['role']['bot'])
+        bot_role_id: int = int(guild_conf['role']['bot'])
         bot_role: discord.Role = guild.get_role(bot_role_id)
         for member in guild.members:
             try:
@@ -216,8 +220,9 @@ class Discord:
 
     async def join_member(self, member: discord.Member):
         conf = self.Config.load_config()
-        dev_role_id: int = int(conf['role']['admin'])
-        bot_role_id: int = int(conf['role']['bot'])
+        guild_conf = conf['guilds'][str(member.guild.id)]
+        dev_role_id: int = int(guild_conf['role']['admin'])
+        bot_role_id: int = int(guild_conf['role']['bot'])
 
         if member.bot: # ロールなどの付与処理
             bot_role = member.guild.get_role(bot_role_id)
@@ -232,5 +237,19 @@ class Discord:
 
         # Logに送信
         members_log_channel_id: int = int(conf['guilds'][str(member.guild.id)]['log']['channels']['members'])
-        members_log_channel: discord.TextChannel = guild.get_channel(members_log_channel_id)
+        members_log_channel: discord.TextChannel = member.guild.get_channel(members_log_channel_id)
+
+        embed = join_member(member=member)
+
+        await members_log_channel.send(embed=embed)
+        return
+
+    async def leave_member(self, member: discord.Member):
+        conf = self.Config.load_config()
+        members_log_channel_id: int = int(conf['guilds'][str(member.guild.id)]['log']['channels']['members'])
+        members_log_channel: discord.TextChannel = member.guild.get_channel(members_log_channel_id)
+
+        embed = leave_member(member)
+
+        await members_log_channel.send(embed=embed)
         return
