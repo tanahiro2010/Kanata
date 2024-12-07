@@ -29,11 +29,6 @@ dis = Discord(config=config, client=client)
 auth = Auth(config=config)
 
 @client.event
-async def on_ready(): # botが起動したとき
-    print('Kanata is ready.')
-    return
-
-@client.event
 async def on_guild_join(guild: discord.Guild):
     owner_id: int = guild.owner_id
     owner: discord.User = client.get_user(owner_id)
@@ -98,4 +93,23 @@ async def on_message_delete(message: discord.Message):
     await message_log_channel.send(embed=embed)
     return
 
+# コマンド実装
+
+@tree.command(name="verify", description="認証ボードを作成します")
+@commands.describe(
+    role="認証後に付けるロールを指定してください",
+    title="認証ボードのタイトル",
+    description="認証ボードの説明 #roleでロールメンション"
+)
+async def verify(interaction: discord.Interaction, role: discord.Role, title: str = "認証", description: str = "認証ボタンを押すと、#roleロールが付与されます") -> None:
+    desc_content = description.replace("#role", "<@&{}>".format(role.id))
+
+    await interaction.response.defere()
+
+
+@client.event
+async def on_ready(): # botが起動したとき
+    print('Kanata is ready.')
+    await tree.sync() # コマンドを同期
+    return
 client.run(token)
